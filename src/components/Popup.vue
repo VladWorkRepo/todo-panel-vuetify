@@ -1,6 +1,6 @@
 <template>
     <div class="text-center">
-        <v-dialog width="500">
+        <v-dialog width="500" v-model="dialog">
             <template v-slot:activator="{ on }">
                 <v-btn class="blue darken-3" dark v-on="on">Add New Project</v-btn>
             </template>
@@ -16,7 +16,7 @@
                             </template>
                             <v-date-picker v-model="due"></v-date-picker>
                         </v-menu>
-                        <v-btn text color="blue" @click="submit">Add project</v-btn>
+                        <v-btn text color="blue" @click="submit" :loading="loadingButton">Add project</v-btn>
                     </v-form>
                 </v-card-text>
             </v-card>
@@ -29,6 +29,7 @@ import moment from 'moment';
 //import db from '@/fb.js';
 
 export default {
+    emits: ['projectAdded'],
     data() {
         return {
             title: '',
@@ -42,7 +43,9 @@ export default {
             ],
             dataRules: [
                 d => d.length >=1 || 'Choose date!'
-            ]
+            ],
+            loadingButton: false,
+            dialog: false
         };
     },
     methods: {
@@ -57,7 +60,10 @@ export default {
             //     }
 
             //     db.collection('projects').add(project);
-            console.log(this.title + ' ' + this.content);
+                console.log(this.title + ' ' + this.content);
+                this.loadingButton = true;
+                this.dialog = false;
+                this.$emit('projectAdded');
             }
         }
     },
